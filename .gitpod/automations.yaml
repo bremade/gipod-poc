@@ -1,0 +1,25 @@
+services:
+  database:
+    name: Start Database
+    triggeredBy:
+      - postDevcontainerStart
+    commands:
+      start: docker-compose up postgres
+      ready: docker-compose exec postgres echo 'Container is alive'
+      stop: docker-compose stop postgres
+
+  flyway:
+    name: Migrate test data
+    triggeredBy:
+      - postDevcontainerStart
+    commands:
+      start: docker-compose up flyway
+
+tasks:
+  build:
+    name: Build Code
+    triggeredBy:
+      - postDevcontainerStart
+    command: |
+      echo Building artifacts ...
+      mvn clean install
